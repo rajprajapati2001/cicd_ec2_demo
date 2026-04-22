@@ -1,4 +1,4 @@
-name: Node.js CI/CD to AWS EC2
+name: Node.js CI/CD
 
 on:
   push:
@@ -11,21 +11,23 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
+          username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          # The script below ensures NVM/Node is found and updates the app
+          port: 22
           script: |
-            export PATH=$PATH:/usr/bin:/usr/local/bin
-            cd /home/ubuntu/cicd_ec2_demo
+            # Navigate to repo (ensure this folder exists!)
+            cd /home/ubuntu/cicd_ec2_demo || exit
+            
+            # Update code
             git pull origin main
+            
+            # Load Node and NPM
+            export PATH=$PATH:/usr/bin:/usr/local/bin
             npm install --production
+            
+            # Restart App
             pm2 restart cicd_ec2_demo || pm2 start index.js --name "cicd_ec2_demo"
