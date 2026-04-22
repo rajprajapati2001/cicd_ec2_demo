@@ -6,6 +6,7 @@ app.get('/', (req, res) => {
   res.send(`
     <body style="background-color: green; color: white; font-family: sans-serif;">
       <h1>Hello World from Raj</h1>
+      <p>Now this is Working CI/CD</p>
       <p>I am doing CI/CD in GitHub Actions and connecting it with AWS EC2 Ubuntu</p>
     </body>
   `);

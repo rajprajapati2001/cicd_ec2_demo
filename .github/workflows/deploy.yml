@@ -31,3 +31,4 @@ jobs:
             
             # Restart App
             pm2 restart cicd_ec2_demo || pm2 start index.js --name "cicd_ec2_demo"
+            pm2 restart all
