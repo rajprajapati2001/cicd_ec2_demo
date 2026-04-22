@@ -1,35 +1,34 @@
-name: EC2 Node js Deployment
+name: Node.js CI/CD to AWS EC2
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ] # Triggers on push to main branch
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20' # Updated to a modern LTS version
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Match your local version
 
-      - name: Install dependencies
-        run: npm install
+    - name: Install Dependencies
+      run: npm install
 
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            export PATH=$PATH:/home/ubuntu/.nvm/versions/node/$(node -v)/bin
-            cd /home/ubuntu/cicd_ec2_demo
-            git pull origin main
-            npm install
-            pm2 restart all || pm2 start index.js --name "cicd_ec2_demo"
+    # This step logs into EC2 and runs commands
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd /home/ubuntu/your-repo-folder
+          git pull origin main
+          npm install
+          pm2 restart your-app-name || pm2 start index.js --name your-app-name
