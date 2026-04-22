@@ -25,11 +25,10 @@ jobs:
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
+        username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          export PATH=$PATH:/home/ubuntu/.nvm/versions/node/$(node -v)/bin
-          cd /home/ubuntu/cicd_ec2_demo
+          cd /home/ubuntu/your-repo-folder
           git pull origin main
           npm install
-          pm2 restart all || pm2 start index.js --name "cicd_ec2_demo"
+          pm2 restart your-app-name || pm2 start index.js --name your-app-name
