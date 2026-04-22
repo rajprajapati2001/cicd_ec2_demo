@@ -28,7 +28,13 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd /home/ubuntu/your-repo-folder
+          # Load NVM if you are using it
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          
+          # Navigate and Deploy
+          cd /home/ubuntu/cicd_ec2_demo
           git pull origin main
           npm install
-          pm2 restart your-app-name || pm2 start index.js --name your-app-name
+          # Restart the app
+          pm2 restart cicd_ec2_demo || pm2 start index.js --name "cicd_ec2_demo"
